@@ -1,0 +1,4 @@
+# Ignore virtual environment directories
+.venv/
+
+01_Data/*
