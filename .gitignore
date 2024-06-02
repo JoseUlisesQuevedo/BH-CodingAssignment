@@ -2,3 +2,5 @@
 .venv/
 
 01_Data/*
+
+*.ipynb
