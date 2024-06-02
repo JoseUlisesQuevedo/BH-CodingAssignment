@@ -112,11 +112,17 @@ class TweetCleaner(BaseEstimator,TransformerMixin):
 
 class TweetFeatureExtractor(BaseEstimator,TransformerMixin):
 
+    def __init__(self,N=100,m=100):
+        self.N = N
+        self.m = m
+
     def fit(self, X, y=None):
-        self.positive_words = get_top_N_words(X,N=100,sentiment="Positive")
-        self.negative_words = get_top_N_words(X,N=100,sentiment="Negative")
-        self.positive_bigrams=get_top_N_bigrams(train_set,N=100,sentiment="Positive")
-        self.negative_bigrams= get_top_N_bigrams(train_set,N=100,sentiment="Negative")
+        self.positive_words = get_top_N_words(X,N=self.N,sentiment="Positive")
+        self.negative_words = get_top_N_words(X,N=self.N,sentiment="Negative")
+        self.positive_bigrams=get_top_N_bigrams(train_set,N=self.m,sentiment="Positive")
+        self.negative_bigrams= get_top_N_bigrams(train_set,N=self.m,sentiment="Negative")
+
+        
 
         return self
 
@@ -156,11 +162,12 @@ if __name__ == "__main__":
 
     
     #In order to get my practice in, I'm joiining these datasets and re-splitting further down
-
+    N = 100
+    m = 100
 
     tweet_pipeline = Pipeline([
         ('cleaner',TweetCleaner()),
-        ('feature_extractor',TweetFeatureExtractor()),
+        ('feature_extractor',TweetFeatureExtractor(N,m)),
         ("df_cleaner",DF_Cleaner())
     ])
 
@@ -173,13 +180,13 @@ if __name__ == "__main__":
     train_set,validation_set,train_labels,validation_labels = train_test_split(train_set,train_labels,test_size=0.2,random_state=42)
 
     
-    train_set.to_csv("01_Data/Processed/Training/training_set.csv")
-    validation_set.to_csv("01_Data/Processed/Validation/validation_set.csv")
-    test_set.to_csv("01_Data/Processed/Testing/testing_set.csv")
+    train_set.to_csv("01_Data/Processed/Training/training_set.csv", index=False)
+    validation_set.to_csv("01_Data/Processed/Validation/validation_set.csv",index=False)
+    test_set.to_csv("01_Data/Processed/Testing/testing_set.csv",index=False)
 
-    train_labels.to_csv("01_Data/Processed/Training/training_labels.csv")
-    validation_labels.to_csv("01_Data/Processed/Validation/validation_labels.csv")
-    test_labels.to_csv("01_Data/Processed/Testing/testing_labels.csv")
+    train_labels.to_csv("01_Data/Processed/Training/training_labels.csv",index=False)
+    validation_labels.to_csv("01_Data/Processed/Validation/validation_labels.csv",index=False)
+    test_labels.to_csv("01_Data/Processed/Testing/testing_labels.csv",index=False)
 
     # validation_set.to_csv("../01_Data/Processed/validation_set.csv")
     # test_set.to_csv("../01_Data/Processed/testing_set.csv")
