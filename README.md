@@ -2,7 +2,11 @@
 Coding Assignment for BH RA Application - NLP for tweet sentiment classification. We build a simple pipeline to process tweets and create binary classification models. The repo is structured as follows
 
 # BH-CodingAssignment
-Coding Assignment for BH RA Application - NLP for tweet sentiment classification. We build a simple pipeline to process tweets and create binary classification models. The repo is structured as follows:
+Coding Assignment for BH RA Application - NLP for tweet sentiment classification. We build a simple pipeline to process tweets and create binary classification models. 
+
+> A `requirements.txt` is available to set up a clean environment. After that, running `main.sh` should recreate the results.
+
+The repo is structured as follows:
 
 - `01_Data/`: This directory contains the dataset files used for training and testing the models.
     - `Raw`: Contains the raw datasets as downloaded from Kaggle
@@ -13,6 +17,8 @@ Coding Assignment for BH RA Application - NLP for tweet sentiment classification
     - `main.sh`: Orchestrator that runs the rest of the scripts
     - `generate_report_figures.py`: Small script to generate graph based on results
 - `03_Results/`: This folder stores the final report, as well as the figures and tables that feed it
-    - `Report.md` 
+    - `Report.md`: Final report on project
+    - Other figures and csv
 - `04_Notebooks`: Empty, used it to store scratchpad notebooks
-Please make sure to update this README file if you add or modify any files or directories in the repository.
+
+
