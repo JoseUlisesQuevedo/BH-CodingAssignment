@@ -1,7 +1,4 @@
 # BH-CodingAssignment
-Coding Assignment for BH RA Application - NLP for tweet sentiment classification. We build a simple pipeline to process tweets and create binary classification models. The repo is structured as follows
-
-# BH-CodingAssignment
 Coding Assignment for BH RA Application - NLP for tweet sentiment classification. We build a simple pipeline to process tweets and create binary classification models. 
 
 > A `requirements.txt` is available to set up a clean environment. After that, running `main.sh` should recreate the results.
