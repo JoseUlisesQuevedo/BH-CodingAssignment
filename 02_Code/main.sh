@@ -10,7 +10,7 @@ do
 
 done
 
-#python generate_report_figures.py 
+python 02_Code/generate_report_figures.py 
 
 
 
