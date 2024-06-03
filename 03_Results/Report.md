@@ -173,7 +173,7 @@ In general, this was a fun iteration of a simple binary classification problem. 
 - **Good practices**: The process follows ML good practices on validation and testing, model comparison, etc. 
 ### Bad:
 - **Simplicity**: The exploration is quite simplistic, and there is not a lot of feature engineering or model testing, which could have yielded better results
-- **Imperfect replicability**: Although we tried to keep the process as replicable as possible (see random states of splits), we missed some random states on the optimization and model creation steps.
+- **Imperfect replicability**: Although we tried to keep the process as replicable as possible (see random states of splits), we missed some random states on the optimization and model creation steps. We do not, for example, store our "best" model's parameters.
 - **Express NLP**: While we follow standard NLP procedures, we miss some stop words (such as `im`). The NLP pipeline can be improved. 
 
 
