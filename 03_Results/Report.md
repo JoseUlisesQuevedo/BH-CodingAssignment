@@ -8,7 +8,7 @@ The following report documents findings from the coding challenge assigned. The 
 2. Data pre-processing overview (`data_prep.py`)
 3. Modelling overview (`modelling.py`)
 4. Results + Other questions
-5. Possible further work
+5. Conclusion
 
 
 # 1. Executive summary
@@ -90,3 +90,96 @@ In order to make our code as modular and clean as possible, we take advantage of
 We follow a pretty standard policy for data splitting, since there is no temporal element to care for. Since classes are well balanced (22542 Negative vs 20832 Positive), we use a regular split, but stratify our samples just for good measure. We **save 20% of the data (8698 examples) for testing**, and the remaining 80% is **split again into testing and validation, with a 20% validation set (27886 testing, 6972 validation)**
 
 The processing pipeline ends by creating the datasets and their labels and saving these csv files. 
+
+# 3. Modelling
+
+The modelling pipeline tries two different classification models, and tunes each of them using the optuna library. We try a vanilla Logistic Regression, which takes only the weight features we created, and we try an XGBoost model, which takes those features plus the tweet's length. We use XGBoost since it offers some of the best preformance out of the box. 
+
+## Metric
+
+**We choose ROC AUC as our metric to optimize for**. Since we do not have a lot of knowledge about this specific problem, we do not care more for precison or recall. As such, AUC is a good metric since we care equally for both classes, the dataset is balanced and we do not prefer recall or precision. 
+
+## Tuning
+
+We use the optuna library to tune both our models, in order to pit the "best" models against eachother. We use a validation dataset to tWhile XGBoost offers a lot of customization, in linear regression we can only really tune regularization parameters. For XGBoost, we search over the following:
+
+```python
+params = {
+        "objective": "binary:logistic",
+        "n_estimators": trial.suggest_int("n_estimators", 50, 500),
+        "verbosity": 0,
+        "learning_rate": trial.suggest_float("learning_rate", 1e-3, 0.1, log=True),
+        "reg_alpha":trial.suggest_float("reg_alpha", 1e-3, 10.0, log=True),
+        "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 10.0, log=True),
+        "max_depth": trial.suggest_int("max_depth", 1, 10),
+        "subsample": trial.suggest_float("subsample", 0.05, 1.0),
+        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.05, 1.0),
+        "min_child_weight": trial.suggest_int("min_child_weight", 1, 20),
+    }
+```
+
+Our search spaces are defined more by common practice than domain knowledge, using mostly recommended ranges. We carry out 100 tuning trials for both models. 
+
+## Evaluation
+Once the models have been tuned, we calculate the typical binary classification metrics: precision, recall (over positive class), f1 score and AUC. Even though we care for the last metric mainly, it is good practice to calculate all in case we later choose a different one.
+
+
+# 4. Results
+
+We run the proces above for 4 different vocab sizes (number of words in the top N frequency): [100, 500, 1000, 2000]. We choose this values somewhat arbitrarily (this is yet another hyperparameter we could optimize over), but we choose this based on the number of unique words in the dataset (~2200). 
+
+## Model performance
+
+In all cases, XGBoost preformed better then the vanilla Logistic regression. While this does not come as a surprise, it does suggest that even more preformance could be teased out through the correct feature modelling and model tuning. Below we present the ROC curves for all 4 trials, as well as a results table for each N and each metric for each model. 
+
+| Model               | N    | Precision          | Recall             | F1 Score           | ROC AUC            |
+|---------------------|------|--------------------|--------------------|--------------------|--------------------|
+| XGBoost             | 100  | 0.7756 | 0.7689 | 0.7723 | 0.7819  |
+| Logistic Regression | 100  | 0.7511  | 0.6409 | 0.6917 | 0.7226 |
+| XGBoost             | 500  | 0.8095 | 0.7867  | 0.7980 | 0.8081 |
+| Logistic Regression | 500  | 0.7760 | 0.6896 | 0.7303 | 0.7531 |
+| XGBoost             | 1000 | 0.8090 | 0.7967 | 0.8028 | 0.8116 |
+| Logistic Regression | 1000 | 0.7786 | 0.7004 | 0.7374 | 0.7583 |
+| XGBoost             | 2000 | 0.8227 🏆  | 0.8162 🏆| 0.8194 🏆 | 0.8270 🏆 |
+| Logistic Regression | 2000 | 0.7836 | 0.7033 | 0.74123 | 0.7621 |
+
+### ROC for different vocab sizes (N)
+**N = 100**
+![alt](roc_auc_100.png)
+**N = 500**
+![alt](roc_auc_500.png)
+**N = 1000**
+![alt](roc_auc_1000.png)
+**N = 2000**
+![alt](roc_auc_2000.png)
+
+## Effect of vocab size
+
+We experiment to see the effect of vocabulary size on model performance. For both models, increasing the vocabulary size improved performance at test time. While this is not surprising (a larger vocabulary gives more information to the weight features), it suggest there is value in exploring the tweet's text further.
+
+The following graph shows the effect of vocabulary size on the 4 relevant metrics.
+
+![alt](metrics_vs_N.png)
+
+# 5. Conclusion
+
+In general, this was a fun iteration of a simple binary classification problem. There is a lot of room for improvement, but in general it sets a solid foundation for iteration and exploration. 
+
+## What went well, what didn't
+
+### Good: 
+- **Modularity**: The code turned out to be very modular, which mean expanding should be very easy
+- **Model Improvement**: The proposed model was better than a vanilla model (and than random guessing)
+- **Good practices**: The process follows ML good practices on validation and testing, model comparison, etc. 
+### Bad:
+- **Simplicity**: The exploration is quite simplistic, and there is not a lot of feature engineering or model testing, which could have yielded better results
+- **Imperfect replicability**: Although we tried to keep the process as replicable as possible (see random states of splits), we missed some random states on the optimization and model creation steps.
+- **Express NLP**: While we follow standard NLP procedures, we miss some stop words (such as `im`). The NLP pipeline can be improved. 
+
+
+## Possible improvements and future work
+We identify the following 3 actionable improvements over this project:
+
+1. **Feature engineering**: We did not use the "Entity" column, which could have been used through some encoding procedure as a feature. Other features were not explored. 
+2. **Model exploration**: We tried only 1 model (XGBoost). Although a good choice, it might have been worth it to try a broader set of models
+3. **Advanced NLP + Transformers**: We do not leverage SOTA NLP techniques (word embeddings) which could generate some other interesting features. On the same note, we could implement SOTA Transformer models such as BERT to try to get a better performance. 
