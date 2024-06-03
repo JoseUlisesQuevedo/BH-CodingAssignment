@@ -1,4 +1,4 @@
-# Reusult's report
+# Results report
 ## Berkeley Hass Coding Challenge
 ### Ulises Quevedo - June 2024
 
