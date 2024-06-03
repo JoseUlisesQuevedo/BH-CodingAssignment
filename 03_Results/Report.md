@@ -15,10 +15,10 @@ The following report documents findings from the coding challenge assigned. The 
 
 - We **use only tweets with positive / negative sentiment**, dropping those with Irrelevant or Neutral label
 - We preprocess tweets text with a standard pipeline: **lowercasing, tokenization by words, removal of punctuation and stopwords**
-- We create **"weight" features** for each tweet, based on the frequency of words in positive/negative tweets. We repeat this with bigrams, which ***prove less useful but allow us to find patterns such as names** ("Assassins Creed", "Red Dead"). We add **length of tweet** as an additional feature.
+- We create **"weight" features** for each tweet, based on the frequency of words in positive/negative tweets. We repeat this with bigrams, which **prove less useful but allow us to find patterns such as names** ("Assassins Creed", "Red Dead"). We add **length of tweet** as an additional feature.
 - We package all preprocessing into a **scikit-learn pipeline** to make it modular and easy to modify.
 - We train two models: a logistic regression based only on weight features and an XGBoost classifier based on weight features + length. We **fine tune both using optuna** and a validation dataset, seeking to maximize the ROC AUC metric. 
-- We present a report for different classification method and explore the effect of vocabulary size on models' performance. We find **larger vocab** models are better, and that **XGBoost** preforms better than a vanilla logistic regresion. Likewise, we find that **tweet length** turns out to be a very important feature. 
+- We present a report for different classification metrics and explore the effect of vocabulary size on models' performance. We find **larger vocab** models are better, and that **XGBoost** preforms better than a vanilla logistic regresion. Likewise, we find that **tweet length** turns out to be a very important feature. 
 
 
 # 2. Data preprocessing
@@ -101,7 +101,7 @@ The modelling pipeline tries two different classification models, and tunes each
 
 ## Tuning
 
-We use the optuna library to tune both our models, in order to pit the "best" models against eachother. We use a validation dataset to tWhile XGBoost offers a lot of customization, in linear regression we can only really tune regularization parameters. For XGBoost, we search over the following:
+We use the optuna library to tune both our models, in order to pit the "best" models against eachother. We use a validation dataset to tune. While XGBoost offers a lot of customization, in logistic regression we can only really tune regularization parameters. For XGBoost, we search over the following:
 
 ```python
 params = {
@@ -144,12 +144,16 @@ In all cases, XGBoost preformed better then the vanilla Logistic regression. Whi
 | Logistic Regression | 2000 | 0.7836 | 0.7033 | 0.74123 | 0.7621 |
 
 ### ROC for different vocab sizes (N)
+---
 **N = 100**
 ![alt](roc_auc_100.png)
+---
 **N = 500**
 ![alt](roc_auc_500.png)
+---
 **N = 1000**
 ![alt](roc_auc_1000.png)
+---
 **N = 2000**
 ![alt](roc_auc_2000.png)
 
