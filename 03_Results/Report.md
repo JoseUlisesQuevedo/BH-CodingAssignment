@@ -168,13 +168,13 @@ In general, this was a fun iteration of a simple binary classification problem. 
 ## What went well, what didn't
 
 ### Good: 
-- **Modularity**: The code turned out to be very modular, which mean expanding should be very easy
-- **Model Improvement**: The proposed model was better than a vanilla model (and than random guessing)
-- **Good practices**: The process follows ML good practices on validation and testing, model comparison, etc. 
+- ✅ **Modularity**: The code turned out to be very modular, which mean expanding should be very easy
+- ✅ **Model Improvement**: The proposed model was better than a vanilla model (and than random guessing)
+- ✅ **Good practices**: The process follows ML good practices on validation and testing, model comparison, etc. 
 ### Bad:
-- **Simplicity**: The exploration is quite simplistic, and there is not a lot of feature engineering or model testing, which could have yielded better results
-- **Imperfect replicability**: Although we tried to keep the process as replicable as possible (see random states of splits), we missed some random states on the optimization and model creation steps. We do not, for example, store our "best" model's parameters.
-- **Express NLP**: While we follow standard NLP procedures, we miss some stop words (such as `im`). The NLP pipeline can be improved. 
+- ❌ **Simplicity**: The exploration is quite simplistic, and there is not a lot of feature engineering or model testing, which could have yielded better results
+- ❌ **Imperfect replicability**: Although we tried to keep the process as replicable as possible (see random states of splits), we missed some random states on the optimization and model creation steps. We do not, for example, store our "best" model's parameters.
+- ❌ **Express NLP**: While we follow standard NLP procedures, we miss some stop words (such as `im`). The NLP pipeline can be improved. 
 
 
 ## Possible improvements and future work
