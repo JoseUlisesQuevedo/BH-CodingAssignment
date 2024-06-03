@@ -235,6 +235,4 @@ if __name__ == "__main__":
     validation_labels.to_csv("01_Data/Processed/Validation/validation_labels.csv",index=False)
     test_labels.to_csv("01_Data/Processed/Testing/testing_labels.csv",index=False)
 
-    # validation_set.to_csv("../01_Data/Processed/validation_set.csv")
-    # test_set.to_csv("../01_Data/Processed/testing_set.csv")
-
+   
